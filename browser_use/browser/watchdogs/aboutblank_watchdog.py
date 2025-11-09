@@ -150,95 +150,47 @@ class AboutBlankWatchdog(BaseWatchdog):
 						}}
 						return;
 					}}
-					
-					const animated_title = `Starting agent ${{browser_session_label}}...`;
-					if (document.title === animated_title) {{
-						return;      // already run on this tab, dont run again
-					}}
-					document.title = animated_title;
 
-					// Create the main overlay
 					const loadingOverlay = document.createElement('div');
-					loadingOverlay.id = 'pretty-loading-animation';
 					loadingOverlay.style.position = 'fixed';
-					loadingOverlay.style.top = '0';
-					loadingOverlay.style.left = '0';
-					loadingOverlay.style.width = '100vw';
-					loadingOverlay.style.height = '100vh';
-					loadingOverlay.style.background = '#000';
+					loadingOverlay.style.top = '50%';
+					loadingOverlay.style.left = '50%';
+					loadingOverlay.style.transform = 'translate(-50%, -50%)';
 					loadingOverlay.style.zIndex = '99999';
-					loadingOverlay.style.overflow = 'hidden';
+					loadingOverlay.style.fontFamily = 'Arial, Helvetica, sans-serif';
+					loadingOverlay.style.fontSize = '18px';
+					loadingOverlay.style.color = '#333';
+					loadingOverlay.style.display = 'flex';
+					loadingOverlay.style.alignItems = 'center';
+					loadingOverlay.style.gap = '10px';
 
-					// Create the image element
-					const img = document.createElement('img');
-					img.src = 'https://cf.browser-use.com/logo.svg';
-					img.alt = 'Browser-Use';
-					img.style.width = '200px';
-					img.style.height = 'auto';
-					img.style.position = 'absolute';
-					img.style.left = '0px';
-					img.style.top = '0px';
-					img.style.zIndex = '2';
-					img.style.opacity = '0.8';
+					// Create spinning icon
+					const spinner = document.createElement('div');
+					spinner.style.width = '20px';
+					spinner.style.height = '20px';
+					spinner.style.border = '3px solid #f3f3f3';
+					spinner.style.borderTop = '3px solid #333';
+					spinner.style.borderRadius = '50%';
+					spinner.style.animation = 'spin 1s linear infinite';
 
-					loadingOverlay.appendChild(img);
-					document.body.appendChild(loadingOverlay);
-
-					// DVD screensaver bounce logic
-					let x = Math.random() * (window.innerWidth - 300);
-					let y = Math.random() * (window.innerHeight - 300);
-					let dx = 1.2 + Math.random() * 0.4; // px per frame
-					let dy = 1.2 + Math.random() * 0.4;
-					// Randomize direction
-					if (Math.random() > 0.5) dx = -dx;
-					if (Math.random() > 0.5) dy = -dy;
-
-					function animate() {{
-						const imgWidth = img.offsetWidth || 300;
-						const imgHeight = img.offsetHeight || 300;
-						x += dx;
-						y += dy;
-
-						if (x <= 0) {{
-							x = 0;
-							dx = Math.abs(dx);
-						}} else if (x + imgWidth >= window.innerWidth) {{
-							x = window.innerWidth - imgWidth;
-							dx = -Math.abs(dx);
-						}}
-						if (y <= 0) {{
-							y = 0;
-							dy = Math.abs(dy);
-						}} else if (y + imgHeight >= window.innerHeight) {{
-							y = window.innerHeight - imgHeight;
-							dy = -Math.abs(dy);
-						}}
-
-						img.style.left = `${{x}}px`;
-						img.style.top = `${{y}}px`;
-
-						requestAnimationFrame(animate);
-					}}
-					animate();
-
-					// Responsive: update bounds on resize
-					window.addEventListener('resize', () => {{
-						x = Math.min(x, window.innerWidth - img.offsetWidth);
-						y = Math.min(y, window.innerHeight - img.offsetHeight);
-					}});
-
-					// Add a little CSS for smoothness
+					// Add keyframe animation
 					const style = document.createElement('style');
 					style.textContent = `
-						#pretty-loading-animation {{
-							/*backdrop-filter: blur(2px) brightness(0.9);*/
-						}}
-						#pretty-loading-animation img {{
-							user-select: none;
-							pointer-events: none;
+						@keyframes spin {{
+							0% {{ transform: rotate(0deg); }}
+							100% {{ transform: rotate(360deg); }}
 						}}
 					`;
 					document.head.appendChild(style);
+
+					// Create text element
+					const text = document.createElement('span');
+					text.textContent = 'Loading browser...';
+
+					// Append spinner and text to overlay
+					loadingOverlay.appendChild(spinner);
+					loadingOverlay.appendChild(text);
+					document.body.appendChild(loadingOverlay);
 				}})('{browser_session_label}');
 			"""
 
